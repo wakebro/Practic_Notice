@@ -18,7 +18,7 @@ public class NoticeConsole {
 
 	public void printNoticeList() throws ClassNotFoundException, SQLException {
 		// List 객체에 만든 Notice 객체를 넣어 NoticeService의 getList()를 이용해 정보 추출
-		List<Notice> list = service.getList();
+		List<Notice> list = service.getList(1);
 
 		System.out.println("——————————————————————————————————");
 		System.out.printf("<공지사항> 총 %d게시글\n", 12);

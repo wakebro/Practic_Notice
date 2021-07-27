@@ -35,8 +35,12 @@ CREATE TABLE Notice(
     create_date TIMESTAMP,
     CONSTRAINT NOTICE_PK PRIMARY KEY(NO)
 );
-INSERT INTO notice(id, title, content, create_date) VALUES('JANE', 'title TEST', 'This is ...','2021-07-10 17:50:10');
-ALTER SESSION SET NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SS';
-SELECT * FROM notice ORDER BY no;
-
+--시퀀스 생성
 CREATE SEQUENCE auto_increment START WITH 1 INCREMENT BY 1 MAXVALUE 9999 CYCLE NOCACHE;
+INSERT INTO notice(id, title, content, create_date) VALUES('JANE', 'title TEST', 'This is ...','2021-07-10 17:50:10');
+-- TIMESTAMP 포맷 수정
+ALTER SESSION SET NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SS';
+SELECT ROWNUM, notice.* FROM notice;
+
+
+

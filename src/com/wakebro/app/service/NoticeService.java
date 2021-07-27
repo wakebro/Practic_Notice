@@ -13,18 +13,28 @@ public class NoticeService {
 	private String uid = "mytest";
 	private String pwd = "mytest";
 	private String driver = "oracle.jdbc.driver.OracleDriver";
-	
-	public List<Notice> getList() throws ClassNotFoundException, SQLException {
+
+	public List<Notice> getList(int page) throws ClassNotFoundException, SQLException {
 		Connection con = null;
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		int start = 1 + ((page - 1) * 10); // 1, 11, 21, 31, ...
+		int end = page * 10; // 10, 20, 30, ...
 
 		Class.forName(driver);
 		con = DriverManager.getConnection(url, uid, pwd);
-		stmt = con.createStatement();
-		String sql = "SELECT * FROM notice";
+		String sql = 
+				"SELECT * FROM("
+				+ "SELECT ROWNUM NUM, N.* FROM("
+				+	 "SELECT * FROM notice ORDER BY notice.create_date DESC"
+				+ 	 ") N"
+				+ ")"
+				+ "WHERE NUM BETWEEN ? AND ?";
 
-		rs = stmt.executeQuery(sql);
+		pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, start);
+		pstmt.setInt(2, end);
+		rs = pstmt.executeQuery();
 
 		List<Notice> list = new ArrayList<Notice>();
 
@@ -41,10 +51,11 @@ public class NoticeService {
 		}
 
 		rs.close();
-		stmt.close();
+		pstmt.close();
 		con.close();
 		return list;
 	}
+
 	public int insert(Notice notice) throws ClassNotFoundException, SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -54,20 +65,20 @@ public class NoticeService {
 
 		Class.forName(driver);
 		con = DriverManager.getConnection(url, uid, pwd);
-		String sql = "INSERT INTO notice(id, title, content, create_date) "
-				+ "VALUES(?, ?, ?,SYSDATE)";
-		
+		String sql = "INSERT INTO notice(id, title, content, create_date) " + "VALUES(?, ?, ?,SYSDATE)";
+
 		pstmt = con.prepareStatement(sql);
 		pstmt.setString(1, id);
 		pstmt.setString(2, title);
 		pstmt.setString(3, content);
-		
+
 		int result = pstmt.executeUpdate();
-		
+
 		pstmt.close();
 		con.close();
 		return result;
 	}
+
 	public int update(Notice notice) throws ClassNotFoundException, SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -78,18 +89,19 @@ public class NoticeService {
 		Class.forName(driver);
 		con = DriverManager.getConnection(url, uid, pwd);
 		String sql = "UPDATE notice SET title=? content=? WHERE no=?";
-		
+
 		pstmt = con.prepareStatement(sql);
 		pstmt.setString(1, title);
 		pstmt.setString(2, content);
 		pstmt.setInt(3, no);
-		
+
 		int result = pstmt.executeUpdate();
-		
+
 		pstmt.close();
 		con.close();
 		return result;
 	}
+
 	public int delete(int id) throws ClassNotFoundException, SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -97,12 +109,12 @@ public class NoticeService {
 		Class.forName(driver);
 		con = DriverManager.getConnection(url, uid, pwd);
 		String sql = "DELETE test WHERE no=?";
-		
+
 		pstmt = con.prepareStatement(sql);
 		pstmt.setInt(1, id);
-		
+
 		int result = pstmt.executeUpdate();
-		
+
 		pstmt.close();
 		con.close();
 		return result;
