@@ -55,6 +55,28 @@ public class NoticeService {
 		con.close();
 		return list;
 	}
+	
+	// Scalar
+	public int getCount() throws ClassNotFoundException, SQLException {
+		int count = 0;
+		Connection con = null;
+		Statement pstmt = null;
+		ResultSet rs = null;
+
+		Class.forName(driver);
+		con = DriverManager.getConnection(url, uid, pwd);
+		String sql = "SELECT COUNT(no) count FROM Notice";
+		
+		
+		pstmt = con.createStatement();
+		rs = pstmt.executeQuery(sql);
+		if (rs.next()) {
+			count = rs.getInt("count");  
+		}
+
+
+		return count;
+	}
 
 	public int insert(Notice notice) throws ClassNotFoundException, SQLException {
 		Connection con = null;
@@ -119,4 +141,6 @@ public class NoticeService {
 		con.close();
 		return result;
 	}
+
+
 }

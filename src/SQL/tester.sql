@@ -40,7 +40,24 @@ CREATE SEQUENCE auto_increment START WITH 1 INCREMENT BY 1 MAXVALUE 9999 CYCLE N
 INSERT INTO notice(id, title, content, create_date) VALUES('JANE', 'title TEST', 'This is ...','2021-07-10 17:50:10');
 -- TIMESTAMP 포맷 수정
 ALTER SESSION SET NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SS';
+
+-- ROWNUM은 출력하는 내용에 순서열을 자동으로 생성
 SELECT ROWNUM, notice.* FROM notice;
+-- 단, WHERE ROWNUM BETWEEN 1 AND 10;은 출력이 정상적이지만
+-- BETWEEN 2 AND 10;은 오류가 발생
+-- 이는 ROWNUM을 WHERE절에서 충돌나는 상황으로 서브쿼리를 이용
+SELECT * FROM (SELECT ROWNUM NUM, NOTICE.* FROM NOTICE)
+    WHERE NUM BETWEEN 2 AND 10;
+    
+-- CREATE_DATE의 최신 날짜 순으로 정렬 후 상위 10개만 출력
+-- ROWNUM을 먼저 필터링 후, ORDER BY가 이루어지기 때문에 날짜 정렬이 먼저 되야함
+-- 아래 복잡한 SQL 구문을 간단하게 만들어서 사용하려면 VIEW문을 만들어 사용
+SELECT * FROM(
+    SELECT ROWNUM NUM, N.* FROM(
+        SELECT * FROM notice ORDER BY notice.create_date DESC
+    ) N
+)
+    WHERE NUM BETWEEN 1 AND 10;
 
 
 

@@ -10,6 +10,7 @@ public class Program {
 		// 프로그램 실행 부문
 		// NoticeConsole을 불러와 프로그램을 실행
 		NoticeConsole console = new NoticeConsole();
+		
 
 		START:
 		while (true) {
@@ -21,8 +22,10 @@ public class Program {
 			case 1: // 상세조회
 				break;
 			case 2: // 이전
+				console.movePrevList();
 				break;
 			case 3: // 다음
+				console.moveNextList();
 				break;
 			case 4: // 글쓰기
 				break;
