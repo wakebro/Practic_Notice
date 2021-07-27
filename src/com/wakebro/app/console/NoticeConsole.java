@@ -34,7 +34,7 @@ public class NoticeConsole {
 		}
 
 		System.out.println("——————————————————————————————————");
-		System.out.printf("        %d/%d\n", page, lastpage);
+		System.out.printf("          %d/%d pages\n", page, lastpage);
 	}
 
 	public int inputNoticeMenu() {
@@ -47,17 +47,25 @@ public class NoticeConsole {
 
 	public void movePrevList() {
 		if (page == 1) {
+			System.out.println("=================");
 			System.out.println("이전 페이지가 없습니다.");
+			System.out.println("=================");
 			return;
 		}
 		page -= 1;
 	}
 
-	public void moveNextList() {
+	public void moveNextList() throws ClassNotFoundException, SQLException {
 		// 마지막 페이지를 구하는 로직을 작성 전까지는 사용 불가
-		/*
-		 * if (page == ?) { System.out.println("이전 페이지가 없습니다."); return; }
-		 */
+		int count = service.getCount();
+		int lastpage = count % 10 > 0 ? (count / 10) + 1 : count / 10;
+		if (page == lastpage) {
+			System.out.println("=================");
+			System.out.println("다음 페이지가 없습니다.");
+			System.out.println("=================");
+			return;
+		}
+
 		page += 1;
 	}
 
