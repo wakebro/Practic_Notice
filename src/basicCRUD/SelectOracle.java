@@ -14,14 +14,19 @@ public class SelectOracle {
 			String url = "jdbc:oracle:thin:@localhost:1521/XEPDB1";
 			con = DriverManager.getConnection(url, "mytest", "mytest");
 			stmt = con.createStatement();
-			String sql = "SELECT * FROM test";
+			String sql = "SELECT * FROM notice";
 
 			rs = stmt.executeQuery(sql);
 
-			rs.next();
-			int no = rs.getInt(1);
-			String str = rs.getString(2);
-			System.out.printf("%d : %s", no, str);
+			while (rs.next()) {
+				int no = rs.getInt("no");
+				String id = rs.getString("id");
+				String title = rs.getString("title");
+				String content = rs.getString("content");
+				Date date = rs.getDate("create_date");
+				System.out.printf("No.%3d, Title : %20s, WriteID : %7s, Content : %s, Date : %s\n", 
+						no, title, id, content,date.toString());
+			}
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로딩 실패");
 		} catch (SQLException e) {
@@ -29,6 +34,8 @@ public class SelectOracle {
 		} finally {
 			try {
 				if (con != null && !con.isClosed()) {
+					rs.close();
+					stmt.close();
 					con.close();
 				}
 			} catch (SQLException e) {
