@@ -2,6 +2,7 @@ package com.wakebro.app.console;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Scanner;
 
 import com.wakebro.app.entity.Notice;
 import com.wakebro.app.service.NoticeService;
@@ -24,11 +25,7 @@ public class NoticeConsole {
 		System.out.println("——————————————————————————————————");
 
 		for (Notice n : list) {
-			System.out.printf("%d. %s / %s / %s\n", 
-					n.getNo(), 
-					n.getTitle(), 
-					n.getId(),
-					n.getDate().toString());
+			System.out.printf("%d. %s / %s / %s\n", n.getNo(), n.getTitle(), n.getId(), n.getDate().toString());
 		}
 
 		System.out.println("——————————————————————————————————");
@@ -36,7 +33,12 @@ public class NoticeConsole {
 	}
 
 	public int inputNoticeMenu() {
-		return 0;
+		Scanner sc = new Scanner(System.in);
+		System.out.printf("1.상세조회/ 2.이전/ 3.다음/ 4.글쓰기 /5.종료>");
+		String menu_ = sc.nextLine();
+		int menu = Integer.parseInt(menu_);
+		sc.close();
+		return menu;
 	}
 
 }
